@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link type="text/css" rel="stylesheet" href="youtubestyle.css" />
+<script type="text/javascript" src="jquery-1.4.2.js"></script> 
+<script type="text/javascript"> 
+			$(document).ready(function(){
+				
+				$("#searchyo").click(function(){
+				var val = document.getElementById("searchyo").value;
+				if(val=="Enter YouTube Video URL Here")
+				{
+				document.getElementById("searchyo").value = "";
+				}
+				else
+				{
+				}
+				});
+				$("#searchyo").blur(function(){
+				var val = document.getElementById("searchyo").value;
+				if(val=="")
+				{
+				document.getElementById("searchyo").value = "Enter YouTube Video URL Here";
+				}
+				else
+				{
+				}
+				});
+				
+				$("#username").click(function(){
+				var val1 = document.getElementById("username").value;
+				if(val1=="Enter YouTube Username of the Uploaded Video")
+				{
+				document.getElementById("username").value = "";
+				}
+				else
+				{
+				}
+				});
+				$("#username").blur(function(){
+				var val1 = document.getElementById("username").value;
+				if(val1=="")
+				{
+				document.getElementById("username").value = "Enter YouTube Username of the Uploaded Video";
+				}
+				else
+				{
+				}
+				});
+					
+				$("*").mouseover(function(){
+				var formdata1 = document.youtubeform.category.value;
+				var formdata2 = document.youtubeform.region.value;
+				if(formdata1!="Select YouTube Video Category" && formdata2!="Select Country to Compare With")
+				{
+				$(".results").css("display","block");
+				$(".results1").css("display","block");
+				if(formdata2=="Netherlands" || formdata2=="Czech Republic" || formdata2=="United States")
+				{
+				$(".results1").text('How popular your '+ formdata1 +' video will be in the '+ formdata2 +'');
+				}
+				else
+				{
+				$(".results1").text('How popular your '+ formdata1 +' video will be in '+ formdata2 +'');
+				}
+				}
+				else
+				{
+				$(".results").css("display","none");
+				$(".results1").css("display","none");
+				}
+				});
+				
+				$("#predict").mouseover(function(){
+				document.getElementById('predict').src='predict1.jpg';
+				});
+				
+				$("#predict").mouseout(function(){
+				document.getElementById('predict').src='predict.jpg';
+				});
+				
+				function blurlinks() { 
+					if (!document.getElementById) return; 
+					thelinks = document.getElementsByTagName("a"); 
+					for(i=0; i<thelinks.length; i++) { 
+					thelinks[i].onfocus = unblur; 
+					} 
+					} 
+				
+				});
+</script>  
+</head>
+
+<title>Predict YouTube Video Popularity </title>
+<body onload="blurlinks();">
+<table width="65%" align="center" background="blue5.jpg" style="position:relative; bottom:0px;">
+<tbody>
+<tr>
+<td align="left">
+<br />
+<img src = "youtube1.jpg" style="margin-left:20em;" align="center" /><br /><br />
+<form action="youtubeapi.php" method="post" name="youtubeform" id="forms">
+<input type = "textarea" id="username" name="upload" value="Enter YouTube Username of the Uploaded Video" AUTOCOMPLETE = "OFF" style="margin-left:8em;" /><br /><br />
+<input type = "textarea" id="searchyo" name="URL" value="Enter YouTube Video URL Here" AUTOCOMPLETE = "OFF" style="margin-left:8em;" /><br /><br />
+<select name = "category" id="searchyo1" value ="Category" style="margin-left:8em;">
+  <option>Select YouTube Video Category</option>
+  <option>Autos & Vehicles</option>
+  <option>Comedy</option>
+  <option>Education</option>
+  <option>Entertainment</option>
+  <option>Film & Animation</option>
+  <option>Gaming</option>
+  <option>Howto & Style</option>
+  <option>Music</option>
+  <option>News & Politics</option>
+  <option>Nonprofits & Activism</option>
+  <option>People & Blogs</option>
+  <option>Pets & Animals</option>
+  <option>Science & Technology </option>
+  <option>Sports</option>
+  <option>Travel & Events</option>
+</select><br /><br />
+<select name = "region" id="searchyo1" value ="Region" style="margin-left:8em;">
+  <option>Select Country to Compare With</option>
+  <option>All Countries</option>
+  <option>Argentina</option>
+  <option>Australia</option>
+  <option>Brazil</option>
+  <option>Canada</option>
+  <option>Czech Republic</option>
+  <option>France</option>
+  <option>Germany</option>
+  <option>Great Britain</option>
+  <option>Hong Kong</option>
+  <option>India</option>
+  <option>Ireland</option>
+  <option>Israel</option>
+  <option>Italy </option>
+  <option>Japan</option>
+  <option>Mexico</option>
+  <option>Netherlands</option>
+  <option>Poland</option>
+  <option>Russia</option>
+  <option>South Africa</option>
+  <option>South Korea</option>
+  <option>Spain</option>
+  <option>Sweden</option>
+  <option>Taiwan</option>
+  <option>United States</option>
+</select><br /><br />
+<input type="image" name="image1" src="predict.jpg" style="margin-left:24em" id="predict" />
+</form>
+<br /><h3 class="results">What We Will Predict:</h3><h3 class="results1"></h3>
+<br /><br />
+<p class="homepage14">Data Mining Final Project<br /><br />
+Professor Zacharski<br /><br />
+Created by Greg Franko, Bryan Keelon, Jonathan Houchens, Valerie Igal, and Chris Barnes </p>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
