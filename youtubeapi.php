@@ -173,11 +173,14 @@
 	<?php 
 	
 	$UserVideo = new UserVideo;
+	$countViews;
+	$max1 = 100;
+	$start1 = 0;
 	
-	
-	$feedURL = 'http://gdata.youtube.com/feeds/api/users/'.$user.'/uploads?v=2';
+	$feedURL = 'http://gdata.youtube.com/feeds/api/users/'.$user.'/uploads?&v=2';
    // read feed into SimpleXML object
     $sxml = simplexml_load_file($feedURL);
+   
     // iterate over entries in feed
     foreach ($sxml->entry as $entry) {
       // get nodes in media: namespace for media information
@@ -256,7 +259,6 @@
 	  $UserVideo->respond = $videoRespond;
 	  $UserVideo->rate = $rate;
 	  $UserVideo->embeddable = $embed;
-	  $UserVideo->list = $list;
 	  $UserVideo->id = $video;
 	  $UserVideo->views = $viewCount;
 	  $UserVideo->rating = $rating;
@@ -267,9 +269,25 @@
 		  	$arrayUserKeywords[$i] = strtolower($arrayUserKeywords[$i]);
 		  }
 	  $UserVideo->keywords = $arrayUserKeywords;
-	  	 
-		 
-		
+	
+	  
+	  for($i=0;$i<count($arrayUserKeywords); $i++)
+		  {
+		  	str_replace(",","",$arrayUserKeywords[$i]);
+		  }
+	  $countUserWords = 0;
+	  for($i=0; $i<count($arrayUserKeywords); $i++){
+	  	$pos = strpos($string,$arrayUserKeywords[$i]);
+	  	if($pos === false) {
+		 // string needle NOT found in haystack
+		}
+		else {
+		 // string needle found in haystack
+		 $countUserWords++;
+		}
+	  }	 	 
+	  $UserVideo->countWords = $countUserWords;
+	  	
       ?>
       <div class="item">
         <span class="title">
@@ -292,16 +310,13 @@
 		  <span class="attr">Comment Vote:</span> <?php echo $UserVideo->commentVote; ?> <br />
 		  <span class="attr">Video Respond:</span> <?php echo $UserVideo->respond; ?> <br />
 		  <span class="attr">Rate:</span> <?php echo $UserVideo->rate; ?> <br />
-		  <span class="attr">Embeddable:</span> <?php echo $UserVideo->embed; ?> <br />
-		  <span class="attr">List:</span> <?php echo $UserVideo->list; ?> 
+		  <span class="attr">Embeddable:</span> <?php echo $UserVideo->embeddable; ?> <br />
         </p>
       </div>      
     <?php
      }
-	 else
-	 {
-	 }
-	 }
+     
+    }
 		 
     ?>
 	
@@ -353,11 +368,14 @@
         $rating = 0; 
       }
 	  //get video upload date
-	  $upload = $yt->uploaded;
-	
+	  $upload = $entry->published;
+	  
       
       $Top100Video = new Top100Video;
-      
+          
+      	  $yearUploaded = substr($upload, 0, 4);
+
+      	  $Top100Video->yearUploaded = $yearUploaded;
       	  $Top100Video->time = $length;
 	  $Top100Video->rate = $rate;
 	  $Top100Video->views = $viewCount;
@@ -385,6 +403,23 @@
 	    }
 	  }
 	  $Top100Video->commonKeywords = $commonKeywords;
+	  for($i=0;$i<count($arrayKeywords); $i++)
+		  {
+		  	str_replace(",","",$arrayKeywords[$i]);
+		  }
+	  $countWords = 0;
+	  for($i=0; $i<count($arrayKeywords); $i++){
+	  	$pos1 = strpos($string1,$arrayKeywords[$i]);
+	  	if($pos1 === false) {
+		 // string needle NOT found in haystack
+		}
+		else {
+		 // string needle found in haystack
+		 $countWords++;
+		}
+	  }	 	 
+	  $Top100Video->countWords = $countWords;
+	  
       	$Top100Video->eDist = $Top100Video->euclidean($UserVideo);
       	array_push($arraybig, $Top100Video);
       	
@@ -398,8 +433,6 @@
     $min = min($arrayDist);
     $j = array_search($min, $arrayDist);
     ?>
-    <h3>Euclidean Distance: <?php echo $arraybig[$j]->eDist; ?></h3>
-    
       <div class="item">
         <span class="title">
           <a href="<?php echo $watch; ?>"><?php echo $arraybig[$j]->title; ?></a><br />
@@ -420,6 +453,56 @@
 		  <span class="attr">Video ID:</span> <?php echo $arraybig[$j]->id; ?> 
 		  
       </div>      
+      <?php
+      	 //Determine view count based on extra metadata....
+	 $initialViewCount = $arraybig[$j]->views;  
+
+	 if ($UserVideo->embeddable == "allowed"){
+	 }else{
+	 $initialViewCount = $initialViewCount*.9; 
+	 }
+	 
+      	 if ($UserVideo->comment == "allowed"){
+      	 }else{
+	 $initialViewCount = $initialViewCount*.85; 
+	 }
+      	 if ($UserVideo->commentVote == "allowed"){
+      	 }else{
+	 $initialViewCount = $initialViewCount*.9; 
+	 }
+      	 if ($UserVideo->rate == "allowed"){
+      	 }else{
+	 $initialViewCount = $initialViewCount*.8; 
+	 }
+      	 if ($UserVideo->respond == "allowed"){
+      	 }else{
+	 $initialViewCount = $initialViewCount*.95; 
+	 }
+	 if ($UserVideo->countWords == 0){
+	  $initialViewCount = $initialViewCount*.6;
+	 }else if ($UserVideo->countWords = 1){
+	  $initialViewCount = $initialViewCount*.7;
+	 }else if ($UserVideo->countWords = 2){
+	  $initialViewCount = $initialViewCount*.8;
+	 }else if ($UserVideo->countWords = 3){
+	  $initialViewCount = $initialViewCount*.9;
+	 }else if ($UserVideo->countWords = 4){
+	  $initialViewCount = $initialViewCount*.95;
+	 }else{
+	  
+	 }
+	 
+	 
+         //Find time since video was uploaded
+         $yearsUploaded = date('Y')-$arraybig[$j]->yearUploaded;
+?>
+	<hr style="color:midnightBlue;text-decoration:bold;background-color:midnightBlue;" size=10 />
+	 <h2 style="font-size:20pt;color:midnightBlue;" >
+	 <?php echo "Your video will obtain... (drumroll)... ";
+	 printf('%0.0f',$initialViewCount);
+	 echo " views in... (drumroll)... $yearsUploaded years!!!!!!"; ?>
+
+      </h2>
   </body>
 </html>     
         

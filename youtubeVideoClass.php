@@ -2,12 +2,15 @@
 	require_once "youtubeUserVideoClass.php";
 	
 	class Top100Video {
-		public $title, $desc, $descrip, $time, $rate, $views, $id, $eDist, $commonKeywords, $thumbnail, $author;
+		public $title, $desc, $descrip, $time, $rate, $views, $id, $eDist, $commonKeywords, $thumbnail, $author, $countWords, $yearUploaded;
 		public $keywords = array();
 		
 		
 		//Modified euclidean distance
 		function euclidean($userVideo){
+		    
+		    //For keywords in description
+		    $Distance += sqrt(pow(($userVideo->countWords - $this->countWords),2));
 		    
 		    //Scale this better, average distance ~15-20 atm    
 		    $time= sqrt(pow(($userVideo->time/60 - $this->time/60),2));
@@ -168,7 +171,7 @@
 		    $desc=5;
 		    }
 		    
-		  
+		    
 		    
 		    $Distance += $desc;
 		    return $Distance;
